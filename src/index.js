@@ -35,7 +35,7 @@ export function initialize(env, user, options = {}) {
     emitter.emit(goalsEvent);
   }
 
-  if (document.readyState !== 'complete') {
+  if (window.document && document.readyState !== 'complete') {
     window.addEventListener('load', clientVars.start);
   } else {
     clientVars.start();
@@ -53,8 +53,10 @@ export function initialize(env, user, options = {}) {
     client.flush().catch(() => {});
     platform.synchronousFlush = false;
   };
-  window.addEventListener('beforeunload', syncFlushHandler);
-  window.addEventListener('unload', syncFlushHandler);
+  if (window.addEventListener) {
+    window.addEventListener('beforeunload', syncFlushHandler);
+    window.addEventListener('unload', syncFlushHandler);
+  }
 
   return client;
 }
